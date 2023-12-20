@@ -3,6 +3,7 @@ package org.samasama.chess.service;
 import org.samasama.chess.board.Match;
 import org.samasama.chess.board.MatchFactory;
 import org.samasama.chess.board.Mode;
+import org.samasama.chess.piece.Move;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -31,7 +32,7 @@ public record ChessServiceIMPL() implements ChessService {
     public GameStateDTO move(MoveDTO moveDTO) throws Exception {
         UUID uuid = moveDTO.uuid();
         Match match = matches.get(uuid);
-        match.move(moveDTO.from(), moveDTO.to());
+        match.move(Move.from(moveDTO));
         return new GameStateDTO(
                 uuid,
                 match.getBoard(),

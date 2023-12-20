@@ -5,6 +5,7 @@ import org.samasama.chess.board.Mode;
 import org.samasama.chess.board.State;
 import org.samasama.chess.board.Winner;
 import org.samasama.chess.piece.Color;
+import org.samasama.chess.piece.Piece;
 import org.samasama.chess.piece.Position;
 
 import java.util.UUID;
@@ -25,6 +26,7 @@ public interface ChessService {
 
     public record MoveDTO(
             UUID uuid,
+            Piece piece,
             Position from,
             Position to
     ) {

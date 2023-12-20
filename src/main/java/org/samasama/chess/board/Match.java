@@ -3,6 +3,7 @@ package org.samasama.chess.board;
 import lombok.Getter;
 import org.graalvm.collections.Pair;
 import org.samasama.chess.piece.Color;
+import org.samasama.chess.piece.Move;
 import org.samasama.chess.piece.Piece;
 import org.samasama.chess.piece.Position;
 
@@ -21,14 +22,14 @@ import java.util.Optional;
 @Getter
 public class Match {
     private final Board board;
-    private final List<Pair<Position, Position>> movesHistory;
+    private final List<Move> movesHistory;
     int blackPoints = 0;
     int whitePoints = 0;
     private Winner winner;
     private Color nextMove;
     private State state;
 
-    public Match(BoardInitializer boardInitializer, List<Pair<Position, Position>> movesHistory) {
+    public Match(BoardInitializer boardInitializer, List<Move> movesHistory) {
         BoardInitializer.InitialState initialState = boardInitializer.initialState();
         this.movesHistory = movesHistory;
         board = initialState.board();
@@ -39,9 +40,13 @@ public class Match {
 
     // TODO change all the Exception into a custom Exception
     // TODO check and check mate and all that nonsense -_-
-    public void move(Position from, Position to) throws Exception {
+    public void move(Move move) throws Exception {
+        Piece piece = move.piece();
+        Position from = move.from();
+        Position to = move.to();
         if (from == to) throw new Exception("ARE YOU CRAZY!?");
         Piece inHand = board.getPiece(from).orElseThrow(() -> new Exception("YOU WANNA MOVE AIR?"));
+        if (piece != inHand) throw new Exception("STOP LYING");
         Optional<Piece> inTheWay = board.getPiece(to);
         // TODO: check the from and to are valid board squares
         if (!inHand.validateMove(from, to, this)) {
@@ -59,7 +64,7 @@ public class Match {
             case BLACK -> blackPoints += value;
             case WHITE -> whitePoints += value;
         }
-        movesHistory.add(Pair.create(from, to));
+        movesHistory.add(move);
     }
 
 }

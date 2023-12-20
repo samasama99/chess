@@ -14,6 +14,7 @@ public record Pawn(Color color) implements Piece {
 
     @Override
     public boolean validateMove(Position from, Position to, Match match) {
+        // this will be moved to move function in Match because all pieces share them same errors
         if (from.rank() == to.rank()) return false;
         int direction = switch (color) {
             case BLACK -> 1;
@@ -23,15 +24,31 @@ public record Pawn(Color color) implements Piece {
             if (match.getBoard().getPiece(to).isPresent()) return false;
             boolean isStartingPoint = switch (color) {
                 case BLACK -> from.rank() == 1;
-                case WHITE -> from.rank() == 7;
+                case WHITE -> from.rank() == 6;
             };
             if (isStartingPoint && to.rank() == from.rank() + 2 * direction) return true;
             return to.rank() == from.rank() + direction;
         }
         Optional<Piece> opposite = match.getBoard().getPiece(to);
-        if (opposite.isEmpty()) return false;
-        if (opposite.get().color() == color) return false;
-        return (to.file() == from.file() + 1 || to.file() == from.file() - 1) && to.rank() == from.rank() + direction;
+        boolean upRight = Position.create(from.file() - 1, from.rank() + direction).equals(to);
+        boolean upLeft = Position.create(from.file() + 1, from.rank() + direction).equals(to);
+        if (upLeft || upRight) {
+            if (opposite.isEmpty() && !match.getMovesHistory().isEmpty()) {
+                Move lastMove = match.getMovesHistory().getLast();
+                if (lastMove == null) {
+                    return false;
+                }
+                if (!(lastMove.piece() instanceof Pawn)) {
+                    return false;
+                }
+                return Math.abs(lastMove.from().rank() - lastMove.to().rank()) == 2;
+            }
+            // this will be moved to move function in Match because all pieces share them same errors
+            if (opposite.isPresent()) {
+                return !(opposite.get().color() == color);
+            }
+        }
+        return false;
     }
 
     @Override

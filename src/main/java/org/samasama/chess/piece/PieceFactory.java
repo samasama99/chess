@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PieceFactory {
-    static Map<Pair<Type, Color>, Piece> pieces = new HashMap<>();
+    static final Map<Pair<Type, Color>, Piece> pieces = new HashMap<>();
 
     static {
         pieces.put(
@@ -21,4 +21,7 @@ public class PieceFactory {
     static public Piece of(Type type, Color color) {
         return pieces.get(Pair.create(type, color));
     }
+
+    static final public Piece BLACK_PAWN = of(Type.PAWN, Color.BLACK);
+    static final public Piece WHITE_PAWN = of(Type.PAWN, Color.WHITE);
 }
