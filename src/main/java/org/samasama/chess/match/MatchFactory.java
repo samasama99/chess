@@ -1,4 +1,6 @@
-package org.samasama.chess.board;
+package org.samasama.chess.match;
+
+import org.samasama.chess.board.NormalStartingBoardInitializer;
 
 import java.util.ArrayList;
 import java.util.Objects;

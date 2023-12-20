@@ -1,9 +1,9 @@
 package org.samasama.chess.service;
 
 import org.samasama.chess.board.Board;
-import org.samasama.chess.board.Mode;
-import org.samasama.chess.board.State;
-import org.samasama.chess.board.Winner;
+import org.samasama.chess.match.Mode;
+import org.samasama.chess.match.State;
+import org.samasama.chess.match.Winner;
 import org.samasama.chess.piece.Color;
 import org.samasama.chess.piece.Piece;
 import org.samasama.chess.piece.Position;

@@ -1,4 +1,4 @@
-package org.samasama.chess.board;
+package org.samasama.chess.match;
 
 public enum State {
     START,

@@ -12,6 +12,13 @@ import java.util.stream.IntStream;
 
 public class Board {
     List<List<Optional<Piece>>> board;
+    int blackPoints = 0;
+    int whitePoints = 0;
+
+
+    Board(List<List<Optional<Piece>>> board) {
+        this.board = board;
+    }
 
     public Board() {
         board = new ArrayList<>(8);
@@ -19,7 +26,7 @@ public class Board {
         board.forEach(row -> IntStream.range(0, 8).forEach(i -> row.add(Optional.empty())));
     }
 
-    public int putPiece(Piece piece, Position where) {
+    public void putPiece(Piece piece, Position where) {
         var row = board.get(where.rank());
         Optional<Piece> p = board.get(where.rank()).get(where.file());
         int value = 0;
@@ -27,7 +34,17 @@ public class Board {
             value = p.get().value();
         }
         row.set(where.file(), Optional.of(piece));
-        return value;
+
+        switch (piece.color()) {
+            case BLACK -> blackPoints += value;
+            case WHITE -> whitePoints += value;
+        }
+    }
+
+    public Optional<Piece> takePiece(Position from) {
+        Optional<Piece> piece = board.get(from.rank()).get(from.file());
+        board.get(from.rank()).set(from.file(), Optional.empty());
+        return piece;
     }
 
     public Optional<Piece> getPiece(Position from) {

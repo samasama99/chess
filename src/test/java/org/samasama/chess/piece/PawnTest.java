@@ -2,8 +2,7 @@ package org.samasama.chess.piece;
 
 import org.junit.jupiter.api.Test;
 import org.samasama.chess.board.Board;
-import org.samasama.chess.board.Match;
-import org.samasama.chess.board.Type;
+import org.samasama.chess.match.Match;
 
 import java.util.List;
 
@@ -11,39 +10,39 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.samasama.chess.piece.PieceFactory.BLACK_PAWN;
-import static org.samasama.chess.piece.PieceFactory.WHITE_PAWN;
+import static org.samasama.chess.piece.Piece.BLACK_PAWN;
+import static org.samasama.chess.piece.Piece.WHITE_PAWN;
 
 class PawnTest {
 
     @Test
     void validateMoveFirstMoveTwoStepsAndOneStep() {
-        Piece blackPawn = PieceFactory.of(Type.PAWN, Color.BLACK);
-        Piece whitePawn = PieceFactory.of(Type.PAWN, Color.WHITE);
+        Piece blackPawn = BLACK_PAWN;
+        Piece whitePawn = WHITE_PAWN;
         Match match = mock(Match.class);
 
         Board board = new Board();
         when(match.getBoard()).thenReturn(board);
 
-        assertTrue(blackPawn.validateMove(
+        assertTrue(blackPawn.validate(
                 Position.create(0, 1),
                 Position.create(0, 3),
                 match
         ));
 
-        assertTrue(whitePawn.validateMove(
+        assertTrue(whitePawn.validate(
                 Position.create(1, 6),
                 Position.create(1, 4),
                 match
         ));
 
-        assertTrue(blackPawn.validateMove(
+        assertTrue(blackPawn.validate(
                 Position.create(2, 1),
                 Position.create(2, 2),
                 match
         ));
 
-        assertTrue(whitePawn.validateMove(
+        assertTrue(whitePawn.validate(
                 Position.create(3, 6),
                 Position.create(3, 5),
                 match
@@ -52,19 +51,17 @@ class PawnTest {
 
     @Test
     void validateMovedOneStep() {
-        Piece blackPawn = PieceFactory.of(Type.PAWN, Color.BLACK);
-        Piece whitePawn = PieceFactory.of(Type.PAWN, Color.WHITE);
         Match match = mock(Match.class);
 
         Board board = new Board();
         when(match.getBoard()).thenReturn(board);
 
-        assertTrue(blackPawn.validateMove(
+        assertTrue(BLACK_PAWN.validate(
                 Position.create(5, 2),
                 Position.create(5, 3),
                 match
         ));
-        assertTrue(whitePawn.validateMove(
+        assertTrue(WHITE_PAWN.validate(
                 Position.create(7, 6),
                 Position.create(7, 5),
                 match
@@ -73,14 +70,14 @@ class PawnTest {
 
     @Test
     void validateMoveInvalidSamePosition() {
-        Piece blackPawn = PieceFactory.of(Type.PAWN, Color.BLACK);
+        Piece blackPawn = BLACK_PAWN;
         Match match = mock(Match.class);
         Board board = new Board();
         board.putPiece(blackPawn, Position.create(2, 3));
         when(match.getBoard()).thenReturn(board);
 
         // Attempting to move to the same position should be invalid
-        assertFalse(blackPawn.validateMove(
+        assertFalse(blackPawn.validate(
                 Position.create(2, 3),
                 Position.create(2, 3),
                 match
@@ -89,14 +86,14 @@ class PawnTest {
 
     @Test
     void validateMoveInvalidBackwardMove() {
-        Piece whitePawn = PieceFactory.of(Type.PAWN, Color.WHITE);
+        Piece whitePawn = WHITE_PAWN;
         Match match = mock(Match.class);
         Board board = new Board();
         board.putPiece(whitePawn, Position.create(4, 5));
         when(match.getBoard()).thenReturn(board);
 
         // Attempting to move backward should be invalid
-        assertFalse(whitePawn.validateMove(
+        assertFalse(whitePawn.validate(
                 Position.create(4, 4),
                 Position.create(4, 5),
                 match
@@ -105,14 +102,14 @@ class PawnTest {
 
     @Test
     void validateMoveInvalidTwoStepsNotStartingPoint() {
-        Piece blackPawn = PieceFactory.of(Type.PAWN, Color.BLACK);
+        Piece blackPawn = BLACK_PAWN;
         Match match = mock(Match.class);
         Board board = new Board();
         board.putPiece(blackPawn, Position.create(3, 2));
         when(match.getBoard()).thenReturn(board);
 
         // Attempting to move two steps without being at the starting point should be invalid
-        assertFalse(blackPawn.validateMove(
+        assertFalse(blackPawn.validate(
                 Position.create(3, 2),
                 Position.create(3, 4),
                 match
@@ -121,16 +118,14 @@ class PawnTest {
 
     @Test
     void validateMoveInvalidCaptureOwnPiece() {
-        Piece whitePawn = PieceFactory.of(Type.PAWN, Color.WHITE);
-        Piece anotherWhitePiece = PieceFactory.of(Type.PAWN, Color.WHITE);
         Match match = mock(Match.class);
         Board board = new Board();
-        board.putPiece(whitePawn, Position.create(5, 6));
-        board.putPiece(anotherWhitePiece, Position.create(4, 5));
+        board.putPiece(WHITE_PAWN, Position.create(5, 6));
+        board.putPiece(WHITE_PAWN, Position.create(4, 5));
         when(match.getBoard()).thenReturn(board);
 
         // Attempting to capture own piece should be invalid
-        assertFalse(whitePawn.validateMove(
+        assertFalse(WHITE_PAWN.validate(
                 Position.create(5, 6),
                 Position.create(4, 5),
                 match
@@ -146,12 +141,13 @@ class PawnTest {
         when(match.getBoard()).thenReturn(board);
 
         // Valid move to capture opponent's piece
-        assertTrue(BLACK_PAWN.validateMove(
+        assertTrue(BLACK_PAWN.validate(
                 Position.create(6, 3),
                 Position.create(7, 4),
                 match
         ));
     }
+
     @Test
     void validateEnPassantWhite() {
         Match match = mock(Match.class);
@@ -168,7 +164,7 @@ class PawnTest {
                         )
                 );
 
-        assertTrue(WHITE_PAWN.validateMove(
+        assertTrue(WHITE_PAWN.validate(
                 Position.create(4, 3),
                 Position.create(3, 2),
                 match
@@ -191,7 +187,7 @@ class PawnTest {
                         )
                 );
 
-        assertTrue(BLACK_PAWN.validateMove(
+        assertTrue(BLACK_PAWN.validate(
                 Position.create(4, 1),
                 Position.create(5, 2),
                 match
@@ -200,13 +196,12 @@ class PawnTest {
 
     @Test
     void validateEnPassantInvalidNoDoubleMove() {
-        Piece blackPawn = PieceFactory.of(Type.PAWN, Color.BLACK);
-        Piece whitePawn = PieceFactory.of(Type.PAWN, Color.WHITE);
+        Piece blackPawn = BLACK_PAWN;
         Match match = mock(Match.class);
 
         Board board = new Board();
         board.putPiece(blackPawn, Position.create(4, 4));
-        board.putPiece(whitePawn, Position.create(6, 3));
+        board.putPiece(WHITE_PAWN, Position.create(6, 3));
         System.out.println(board);
         when(match.getBoard()).thenReturn(board);
         when(match.getMovesHistory())
@@ -218,7 +213,7 @@ class PawnTest {
                 );
 
         // Attempting en passant without the opponent's pawn making a double move should be invalid
-        assertFalse(blackPawn.validateMove(
+        assertFalse(blackPawn.validate(
                 Position.create(4, 4),
                 Position.create(4, 2),
                 match
@@ -227,13 +222,12 @@ class PawnTest {
 
     @Test
     void validateEnPassantInvalidNoAdjacentPawn() {
-        Piece blackPawn = PieceFactory.of(Type.PAWN, Color.BLACK);
-        Piece whitePawn = PieceFactory.of(Type.PAWN, Color.WHITE);
+        Piece blackPawn = BLACK_PAWN;
         Match match = mock(Match.class);
 
         Board board = new Board();
         board.putPiece(blackPawn, Position.create(4, 4));
-        board.putPiece(whitePawn, Position.create(6, 4));
+        board.putPiece(WHITE_PAWN, Position.create(6, 4));
         System.out.println(board);
         when(match.getBoard()).thenReturn(board);
         when(match.getMovesHistory())
@@ -243,7 +237,7 @@ class PawnTest {
                         )
                 );
 
-        assertFalse(blackPawn.validateMove(
+        assertFalse(blackPawn.validate(
                 Position.create(4, 4),
                 Position.create(4, 2),
                 match

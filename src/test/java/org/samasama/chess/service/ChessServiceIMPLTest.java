@@ -1,7 +1,7 @@
 package org.samasama.chess.service;
 
 import org.junit.jupiter.api.Test;
-import org.samasama.chess.board.Mode;
+import org.samasama.chess.match.Mode;
 
 class ChessServiceIMPLTest {
 

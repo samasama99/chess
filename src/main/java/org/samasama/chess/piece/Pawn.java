@@ -1,6 +1,6 @@
 package org.samasama.chess.piece;
 
-import org.samasama.chess.board.Match;
+import org.samasama.chess.match.Match;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -12,8 +12,8 @@ public record Pawn(Color color) implements Piece {
         return 1;
     }
 
-    @Override
-    public boolean validateMove(Position from, Position to, Match match) {
+    public boolean validate(Position from, Position to, Match match) {
+
         // this will be moved to move function in Match because all pieces share them same errors
         if (from.rank() == to.rank()) return false;
         int direction = switch (color) {
@@ -49,6 +49,11 @@ public record Pawn(Color color) implements Piece {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean apply(Position from, Position to, Match match) {
+        return validate(from, to, match);
     }
 
     @Override

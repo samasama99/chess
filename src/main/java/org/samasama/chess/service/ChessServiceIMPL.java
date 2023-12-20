@@ -1,8 +1,8 @@
 package org.samasama.chess.service;
 
-import org.samasama.chess.board.Match;
-import org.samasama.chess.board.MatchFactory;
-import org.samasama.chess.board.Mode;
+import org.samasama.chess.match.Match;
+import org.samasama.chess.match.MatchFactory;
+import org.samasama.chess.match.Mode;
 import org.samasama.chess.piece.Move;
 import org.springframework.stereotype.Service;
 

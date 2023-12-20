@@ -1,5 +1,7 @@
 package org.samasama.chess.board;
 
+import org.samasama.chess.match.State;
+import org.samasama.chess.match.Winner;
 import org.samasama.chess.piece.Color;
 
 /**
