@@ -22,23 +22,19 @@ public record ChessServiceIMPL() implements ChessService {
         return new GameStateDTO(
                 uuid,
                 match.getBoard(),
-                match.getState(),
-                match.getNextMove(),
-                match.getWinner()
+                match.getMatchProgress()
         );
     }
 
     @Override
-    public GameStateDTO move(MoveDTO moveDTO) throws Exception {
+    public GameStateDTO move(MoveDTO moveDTO) {
         UUID uuid = moveDTO.uuid();
         Match match = matches.get(uuid);
-        match.move(Move.from(moveDTO));
+        match.apply(Move.from(moveDTO));
         return new GameStateDTO(
                 uuid,
                 match.getBoard(),
-                match.getState(),
-                match.getNextMove(),
-                match.getWinner()
+                match.getMatchProgress()
         );
     }
 }

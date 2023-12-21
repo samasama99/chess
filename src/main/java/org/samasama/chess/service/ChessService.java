@@ -1,12 +1,10 @@
 package org.samasama.chess.service;
 
 import org.samasama.chess.board.Board;
+import org.samasama.chess.match.MatchProgress;
 import org.samasama.chess.match.Mode;
-import org.samasama.chess.match.State;
-import org.samasama.chess.match.Winner;
-import org.samasama.chess.piece.Color;
 import org.samasama.chess.piece.Piece;
-import org.samasama.chess.piece.Position;
+import org.samasama.chess.piece.Pos;
 
 import java.util.UUID;
 
@@ -18,17 +16,17 @@ public interface ChessService {
     public record GameStateDTO(
             UUID uuid,
             Board board,
-            State state,
-            Color nextMove,
-            Winner winner
+            MatchProgress matchProgress
     ) {
     }
 
     public record MoveDTO(
             UUID uuid,
             Piece piece,
-            Position from,
-            Position to
+            Pos from,
+            Pos to,
+            Piece takenPiece,
+            Piece promotionPiece
     ) {
     }
 }

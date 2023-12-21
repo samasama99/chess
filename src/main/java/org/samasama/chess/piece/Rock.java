@@ -6,16 +6,25 @@ import org.samasama.chess.match.Match;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import static java.lang.Integer.max;
+import static java.lang.Integer.min;
+
 public record Rock(Color color) implements Piece {
-    static boolean isPieceInTheWayInTheRank(Position from, Position to, Board board, int rank) {
-        return IntStream.range(from.file() + 1, to.file() - 1)
-                .mapToObj(n -> board.getPiece(Position.create(rank, n)))
+    static boolean isPieceInTheWayInTheRank(Pos from, Pos to, Board board, int rank) {
+        int a = from.rank();
+        int b = to.rank();
+        return IntStream.range(min(a, b) + 1, max(a, b))
+                .mapToObj(n -> Pos.of(rank, n))
+                .map(board::getPiece)
                 .anyMatch(Optional::isPresent);
     }
 
-    static boolean isPieceInTheWayInTheFile(Position from, Position to, Board board, int file) {
-        return IntStream.range(from.file() + 1, to.file() - 1)
-                .mapToObj(n -> board.getPiece(Position.create(n, file)))
+    static boolean isPieceInTheWayInTheFile(Pos from, Pos to, Board board, int file) {
+        int a = from.file();
+        int b = to.file();
+        return IntStream.range(min(a, b) + 1, max(a, b))
+                .mapToObj(n -> Pos.of(n, file))
+                .map(board::getPiece)
                 .anyMatch(Optional::isPresent);
     }
 
@@ -25,31 +34,24 @@ public record Rock(Color color) implements Piece {
     }
 
     @Override
-    public boolean apply(Position from, Position to, Match match) {
-        return validate(from, to, match);
+    public boolean apply(Move move, Match match) {
+        return validate(move, match);
     }
 
     @Override
-    public boolean validate(Position from, Position to, Match match) {
+    public boolean validate(Move move, Match match) {
+        Pos from = move.from();
+        Pos to = move.to();
+
         if (from.rank() == to.rank() && from.file() != to.file()) {
             if (Math.abs(from.file() - to.file()) == 1) return true;
             int rank = from.rank();
-            Board board = match.getBoard();
-
-            if (from.file() > to.file()) {
-                return !isPieceInTheWayInTheRank(from, to, board, rank);
-            }
-            return true;
+            return !isPieceInTheWayInTheFile(from, to, match.getBoard(), rank);
         }
         if (from.rank() != to.rank() && from.file() == to.file()) {
             if (Math.abs(from.rank() - to.rank()) == 1) return true;
             int file = from.file();
-            Board board = match.getBoard();
-
-            if (from.rank() > to.rank()) {
-                return !isPieceInTheWayInTheFile(from, to, board, file);
-            }
-            return true;
+            return !isPieceInTheWayInTheRank(from, to, match.getBoard(), file);
         }
         return false;
     }

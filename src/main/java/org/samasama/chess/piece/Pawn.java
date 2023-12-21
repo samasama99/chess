@@ -12,7 +12,9 @@ public record Pawn(Color color) implements Piece {
         return 1;
     }
 
-    public boolean validate(Position from, Position to, Match match) {
+    public boolean validate(Move move, Match match) {
+        Pos from = move.from();
+        Pos to = move.to();
 
         // this will be moved to move function in Match because all pieces share them same errors
         if (from.rank() == to.rank()) return false;
@@ -30,8 +32,8 @@ public record Pawn(Color color) implements Piece {
             return to.rank() == from.rank() + direction;
         }
         Optional<Piece> opposite = match.getBoard().getPiece(to);
-        boolean upRight = Position.create(from.file() - 1, from.rank() + direction).equals(to);
-        boolean upLeft = Position.create(from.file() + 1, from.rank() + direction).equals(to);
+        boolean upRight = Pos.of(from.file() - 1, from.rank() + direction).equals(to);
+        boolean upLeft = Pos.of(from.file() + 1, from.rank() + direction).equals(to);
         if (upLeft || upRight) {
             if (opposite.isEmpty() && !match.getMovesHistory().isEmpty()) {
                 Move lastMove = match.getMovesHistory().getLast();
@@ -52,8 +54,8 @@ public record Pawn(Color color) implements Piece {
     }
 
     @Override
-    public boolean apply(Position from, Position to, Match match) {
-        return validate(from, to, match);
+    public boolean apply(Move move, Match match) {
+        return validate(move, match);
     }
 
     @Override

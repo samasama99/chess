@@ -1,7 +1,9 @@
 package org.samasama.chess.match;
 
-public enum State {
-    START,
-    ONGOING,
-    ENDED
+import org.samasama.chess.board.Board;
+
+public record State(MatchProgress matchProgress, Board board) {
+    public static State of(MatchProgress matchProgress, Board board) {
+        return new State(matchProgress, board);
+    }
 }

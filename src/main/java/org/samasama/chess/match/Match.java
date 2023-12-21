@@ -7,10 +7,9 @@ import org.samasama.chess.exceptions.IllegalMoveException;
 import org.samasama.chess.exceptions.InvalidCaptureException;
 import org.samasama.chess.exceptions.InvalidPositionException;
 import org.samasama.chess.exceptions.PieceNotFoundException;
-import org.samasama.chess.piece.Color;
 import org.samasama.chess.piece.Move;
 import org.samasama.chess.piece.Piece;
-import org.samasama.chess.piece.Position;
+import org.samasama.chess.piece.Pos;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,44 +25,47 @@ import java.util.Optional;
  */
 @Getter
 public class Match {
-    private final Board board;
     private final List<Move> movesHistory;
-    private Winner winner;
-    private Color nextMove;
-    private State state;
+    Board board;
+    MatchProgress matchProgress;
 
     public Match(BoardInitializer boardInitializer, List<Move> movesHistory) {
-        BoardInitializer.InitialState initialState = boardInitializer.initialState();
+        State state = boardInitializer.initialState();
         this.movesHistory = movesHistory;
-        board = initialState.board();
-        winner = initialState.winner();
-        nextMove = initialState.nextMove();
-        state = initialState.state();
+        this.board = state.board();
+        this.matchProgress = state.matchProgress();
     }
 
     // TODO change all the Exception into a custom Exception
     // TODO check and check mate and all that nonsense -_-
 
     /**
-     * TODO
+     * TODO<br>
      * First need to check if the current player is in check
-     *      if yes you check if the `move` will remove the player from begin checked
-     *      if no you should check if the move will put him in check, then throw error
-     *      or will put his opponent in check and then check if the check is a mate
+     *      <pre>
+     *    if yes you check if the `move` will remove the player from begin checked
+     *    if no you should check if the move will put him in check, then throw error
+     *    or will put his opponent in check and then check if the check is a mate
+     *      </pre>
      */
-    public void move(Move move) {
+    public void apply(Move move) {
         Piece piece = move.piece();
-        Position from = move.from();
-        Position to = move.to();
+        Pos from = move.from();
+        Pos to = move.to();
         if (from == to) throw new IllegalMoveException("ARE YOU CRAZY!?");
         Piece inHand = board
                 .getPiece(from)
                 .orElseThrow(() -> new PieceNotFoundException("YOU WANNA MOVE AIR?"));
         if (piece != inHand) throw new PieceNotFoundException("STOP LYING");
         Optional<Piece> inTheWay = board.getPiece(to);
+        if (move.takenPiece() != null && inTheWay.isEmpty()) {
+            throw new PieceNotFoundException("YOU ARE TRYING TO TAKE THE WRONG PIECE YO PIECE OF ****");
+        } else if (move.takenPiece() == null && inTheWay.isPresent()) {
+            throw new IllegalMoveException("YOU ARE NOT WELCOMED!");
+        }
         if (isInvalidPosition(from) || isInvalidPosition(to))
             throw new InvalidPositionException("GO LEARN CHESS PLEASE");
-        if (!inHand.apply(from, to, this)) {
+        if (!inHand.apply(move, this)) {
             throw new IllegalMoveException("THIS PIECE DOES NOT MOVE LIKE THAT!");
         }
         inTheWay.ifPresent(p -> {
@@ -73,12 +75,13 @@ public class Match {
         // TODO calculate point if the piece took another piece
         board.putPiece(inHand, to);
         movesHistory.add(move);
-        nextMove = nextMove == Color.BLACK ? Color.WHITE : Color.BLACK;
+        // TODO this should be changed to the new state
+//        currentPlayer = currentPlayer == Color.BLACK ? Color.WHITE : Color.BLACK;
     }
 
-    private boolean isInvalidPosition(Position position) {
-        return position.rank() < 0 || position.rank() > 7 ||
-                position.file() < 0 || position.file() > 7;
+    private boolean isInvalidPosition(Pos pos) {
+        return pos.rank() < 0 || pos.rank() > 7 ||
+                pos.file() < 0 || pos.file() > 7;
     }
 
 }

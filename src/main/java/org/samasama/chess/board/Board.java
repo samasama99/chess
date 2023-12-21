@@ -1,7 +1,8 @@
 package org.samasama.chess.board;
 
+import lombok.Getter;
 import org.samasama.chess.piece.Piece;
-import org.samasama.chess.piece.Position;
+import org.samasama.chess.piece.Pos;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +13,9 @@ import java.util.stream.IntStream;
 
 public class Board {
     List<List<Optional<Piece>>> board;
+    @Getter
     int blackPoints = 0;
+    @Getter
     int whitePoints = 0;
 
 
@@ -26,7 +29,7 @@ public class Board {
         board.forEach(row -> IntStream.range(0, 8).forEach(i -> row.add(Optional.empty())));
     }
 
-    public void putPiece(Piece piece, Position where) {
+    public void putPiece(Piece piece, Pos where) {
         var row = board.get(where.rank());
         Optional<Piece> p = board.get(where.rank()).get(where.file());
         int value = 0;
@@ -41,13 +44,13 @@ public class Board {
         }
     }
 
-    public Optional<Piece> takePiece(Position from) {
+    public Optional<Piece> takePiece(Pos from) {
         Optional<Piece> piece = board.get(from.rank()).get(from.file());
         board.get(from.rank()).set(from.file(), Optional.empty());
         return piece;
     }
 
-    public Optional<Piece> getPiece(Position from) {
+    public Optional<Piece> getPiece(Pos from) {
         return board.get(from.rank()).get(from.file());
     }
 

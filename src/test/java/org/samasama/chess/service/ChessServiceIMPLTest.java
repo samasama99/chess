@@ -11,9 +11,7 @@ class ChessServiceIMPLTest {
     void createGame() {
         ChessService.GameStateDTO gameStateDTO = chessService.createGame(Mode.NORMAL);
         System.out.println(gameStateDTO.uuid());
-        System.out.println(gameStateDTO.state());
-        System.out.println(gameStateDTO.nextMove());
-        System.out.println(gameStateDTO.winner());
+        System.out.println(gameStateDTO.matchProgress());
         System.out.println(gameStateDTO.board());
     }
 
