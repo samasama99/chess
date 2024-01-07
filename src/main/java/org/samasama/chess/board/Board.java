@@ -10,14 +10,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+@Getter
 public class Board {
     List<List<Optional<Piece>>> board;
-    @Getter
     int blackPoints = 0;
-    @Getter
     int whitePoints = 0;
-
 
     Board(List<List<Optional<Piece>>> board) {
         this.board = board;
